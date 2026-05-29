@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskQuest — Inicia sesión</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0e0f14; --surface: #16181f; --surface2: #1e2028;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.14);
+    --text: #f0f0f5; --muted: #7a7d8c;
+    --accent: #7c6af7; --accent2: #4fd1a5;
+    --red: #f26a6a; --font: 'DM Sans', sans-serif; --mono: 'DM Mono', monospace;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+
+  /* stars bg */
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none;
+    background-image: radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 15%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 75%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 90%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(2px 2px at 20% 45%, rgba(124,106,247,0.4) 0%, transparent 100%),
+      radial-gradient(2px 2px at 75% 35%, rgba(79,209,165,0.3) 0%, transparent 100%);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 400px;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.4s ease;
+  }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+
+  .logo { text-align: center; margin-bottom: 2rem; }
+  .logo-icon { font-size: 2.5rem; display: block; margin-bottom: 6px; }
+  .logo-name { font-size: 1.4rem; font-weight: 600; letter-spacing: -0.03em; }
+  .logo-sub { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
+  .tabs { display: flex; background: var(--surface2); border-radius: 10px; padding: 4px; margin-bottom: 1.5rem; }
+  .tab {
+    flex: 1; text-align: center; padding: 8px; border-radius: 7px;
+    font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--muted);
+  }
+  .tab.active { background: var(--surface); color: var(--text); border: 1px solid var(--border2); }
+
+  .form { display: none; flex-direction: column; gap: 14px; }
+  .form.active { display: flex; }
+
+  label { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; display: block; margin-bottom: 5px; }
+  input {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 9px; color: var(--text); font-family: var(--font);
+    font-size: 14px; padding: 11px 14px; outline: none; transition: border 0.15s;
+  }
+  input:focus { border-color: var(--accent); }
+  input::placeholder { color: var(--muted); }
+
+  .btn {
+    background: var(--accent); color: white; border: none;
+    border-radius: 9px; padding: 12px; font-family: var(--font);
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s; margin-top: 4px;
+  }
+  .btn:hover { opacity: 0.88; }
+  .btn:active { transform: scale(0.98); }
+
+  .error { font-size: 12px; color: var(--red); text-align: center; min-height: 18px; }
+  .success { font-size: 12px; color: var(--accent2); text-align: center; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <span class="logo-icon">⚡</span>
+    <div class="logo-name">TaskQuest</div>
+    <div class="logo-sub">productivity RPG</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('login')">Iniciar sesión</div>
+    <div class="tab" onclick="switchTab('register')">Registrarse</div>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="form active" id="form-login">
+    <div>
+      <label>Usuario o email</label>
+      <input type="text" id="l-user" placeholder="tu_usuario o email@ejemplo.com" autocomplete="username">
+    </div>
+    <div>
+      <label>Contraseña</label>
+      <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="error" id="login-error"></div>
+    <button class="btn" onclick="doLogin()">Entrar al juego →</button>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="form" id="form-register">
+    <div>
+      <label>Nombre de usuario</label>
+      <input type="text" id="r-user" placeholder="heroe_epic" autocomplete="username">
+    </div>
+    <div>
+      <label>Email</label>
+      <input type="email" id="r-email" placeholder="tu@email.com" autocomplete="email">
+    </div>
+    <div>
+      <label>Contraseña</label>
+      <input type="password" id="r-pass" placeholder="mínimo 6 caracteres" autocomplete="new-password">
+    </div>
+    <div class="error" id="register-error"></div>
+    <button class="btn" onclick="doRegister()">Crear cuenta →</button>
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (i===0 && tab==='login') || (i===1 && tab==='register')));
+  document.getElementById('form-login').classList.toggle('active', tab==='login');
+  document.getElementById('form-register').classList.toggle('active', tab==='register');
+  document.getElementById('login-error').textContent = '';
+  document.getElementById('register-error').textContent = '';
+}
+
+async function doLogin() {
+  const username = document.getElementById('l-user').value.trim();
+  const password = document.getElementById('l-pass').value;
+  if(!username || !password) { document.getElementById('login-error').textContent = 'Completa todos los campos'; return; }
+  const res = await fetch('/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username, password}) });
+  const data = await res.json();
+  if(data.success) window.location.href = '/';
+  else document.getElementById('login-error').textContent = data.error;
+}
+
+async function doRegister() {
+  const username = document.getElementById('r-user').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const password = document.getElementById('r-pass').value;
+  if(!username || !email || !password) { document.getElementById('register-error').textContent = 'Completa todos los campos'; return; }
+  const res = await fetch('/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username, email, password}) });
+  const data = await res.json();
+  if(data.success) window.location.href = '/';
+  else document.getElementById('register-error').textContent = data.error;
+}
+
+// enter key
+document.addEventListener('keydown', e => {
+  if(e.key === 'Enter') {
+    if(document.getElementById('form-login').classList.contains('active')) doLogin();
+    else doRegister();
+  }
+});
+</script>
+</body>
+</html>
